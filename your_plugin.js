@@ -11,14 +11,7 @@ function processTableRows(dataList) {
         return;
     }
 
-    console.log({
-        iframe: document.getElementById("socframe")
-    });
-
     const trCheckBoxes = document.querySelectorAll('tr.trCheckBox');
-
-    console.log({trCheckBoxes: trCheckBoxes})
-
     trCheckBoxes.forEach(tr => {
         const labelTd = tr.querySelector('td.label');
         if (!labelTd) {

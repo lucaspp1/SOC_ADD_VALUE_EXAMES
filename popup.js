@@ -12,16 +12,10 @@ const storageAPI = (() => {
 
 // popup.js
 document.addEventListener('DOMContentLoaded', () => {
-
-    console.log("DOMContentLoaded")
-
     const applyButton = document.getElementById('applyButton');
     const addMoreButton = document.getElementById('addMore');
     const inputContainer = document.getElementById('inputContainer');
     const messageDiv = document.getElementById('message');
-
-
-
     try {
         
         // Recupera dados salvos, se existirem

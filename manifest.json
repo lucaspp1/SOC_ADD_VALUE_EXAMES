@@ -14,7 +14,8 @@
     },
     "content_scripts": [
       {
-        "matches": ["<all_urls>"],
+        "matches_old": ["<all_urls>"],
+        "matches": ["https://sistema.soc.com.br/*"],
         "all_frames": true,
         "js": ["content_script.js", "popup.js", "your_plugin.js"]
       }
@@ -22,7 +23,8 @@
     "web_accessible_resources": [
       {
         "resources": ["your_plugin.js"],
-        "matches": ["<all_urls>"]
+        "matches": ["https://sistema.soc.com.br/*"],
+        "matches_old": ["<all_urls>"]
       }
     ],
     "icons": {
