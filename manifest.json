@@ -1,0 +1,32 @@
+{
+    "manifest_version": 3,
+    "name": "Atualizador de Tabela Dinâmico",
+    "version": "1.0",
+    "description": "Atualiza campos de tabela com base em valores fornecidos pelo usuário via interface da extensão.",
+    "permissions": ["activeTab", "scripting"],
+    "action": {
+      "default_popup": "popup.html",
+      "default_icon": {
+        "16": "icons/icon16.png",
+        "48": "icons/icon48.png",
+        "128": "icons/icon128.png"
+      }
+    },
+    "content_scripts": [
+      {
+        "matches": ["<all_urls>"],
+        "js": ["content_script.js", "popup.js", "your_plugin.js"]
+      }
+    ],
+    "web_accessible_resources": [
+      {
+        "resources": ["your_plugin.js"],
+        "matches": ["<all_urls>"]
+      }
+    ],
+    "icons": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  }
