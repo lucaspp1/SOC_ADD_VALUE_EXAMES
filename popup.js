@@ -100,7 +100,40 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        processTableRows(dataList);
+        // processTableRows(dataList);
+
+        // --- MUDANÇAS AQUI ---
+        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+            if (tabs.length === 0) {
+                displayMessage('Nenhuma aba ativa encontrada.', 'error');
+                return;
+            }
+            const tabId = tabs[0].id;
+
+            // Injeta o 'your_plugin.js' na página através do content_script
+            // Usamos chrome.scripting.executeScript aqui para garantir que o content_script.js
+            // seja executado primeiro e tenha acesso ao 'window.URL' para injetar o plugin.
+            // Para navegadores que não suportam bem, 'content_script.js' já estará injetado
+            // e cuidará da carga do 'your_plugin.js'.
+
+            // Enviamo uma mensagem para o content_script com os dados
+            // O content_script, por sua vez, carrega e executa o your_plugin.js
+            chrome.tabs.sendMessage(tabId, { type: "APPLY_DATA", data: dataList }, (response) => {
+                if (chrome.runtime.lastError) {
+                    // Isso pode ocorrer se o content_script ainda não foi injetado ou não está respondendo
+                    console.error("Erro ao enviar mensagem:", chrome.runtime.lastError);
+                    displayMessage('Erro de comunicação com a página. Tente recarregar a página e a extensão.', 'error');
+                } else if (response && response.status === "success") {
+                    displayMessage('Valores aplicados com sucesso!', 'success');
+                } else if (response && response.status === "error") {
+                    displayMessage('Erro ao aplicar valores na página: ' + response.message, 'error');
+                } else {
+                    displayMessage('Tentando aplicar valores... verifique o console para detalhes.', 'warning');
+                }
+            });
+        });
+        // --- FIM DAS MUDANÇAS ---
+
         
     });
 

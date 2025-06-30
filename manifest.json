@@ -15,6 +15,7 @@
     "content_scripts": [
       {
         "matches": ["<all_urls>"],
+        "all_frames": true,
         "js": ["content_script.js", "popup.js", "your_plugin.js"]
       }
     ],
