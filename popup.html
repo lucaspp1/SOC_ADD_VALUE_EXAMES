@@ -92,12 +92,24 @@
             color: #856404;
             border: 1px solid #ffeeba;
         }
+
+        #textCopy {
+            width: 100%; /* Isso faz o textarea ocupar toda a largura da div pai */
+            min-height: 100px; /* Altura mínima para o textarea */
+            resize: vertical; /* Permite redimensionar apenas verticalmente */
+        }
     </style>
 </head>
 <body>
     <h3>Configurar Valores da Tabela</h3>
+
+    <div id="input¨TextCopy" width="100%" >
+        <textarea name="textCopy" id="textCopy" width="10%" ></textarea>
+    </div>
+
     <div id="inputContainer">
-        </div>
+    </div>
+
     <button id="addMore"> Adicionar Mais Campos </button>
     <button id="applyButton">Aplicar Valores</button>
     <div id="message"></div>

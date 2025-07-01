@@ -16,6 +16,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const addMoreButton = document.getElementById('addMore');
     const inputContainer = document.getElementById('inputContainer');
     const messageDiv = document.getElementById('message');
+    const textCopy = document.getElementById('textCopy');
+
     try {
         
         // Recupera dados salvos, se existirem
@@ -30,13 +32,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
         } else {
-            addInputFieldGroup(); // Adiciona um grupo vazio se não houver API de armazenamento
+            // addInputFieldGroup(); // Adiciona um grupo vazio se não houver API de armazenamento
         }
-
     } catch (error) {
         console.error(error)
     }
-
 
     // Função para adicionar um novo conjunto de campos de input
     function addInputFieldGroup(label = '2,5 HEXANODIONA', input1 = '100', input2 = '100') {
@@ -69,23 +69,39 @@ document.addEventListener('DOMContentLoaded', () => {
     applyButton.addEventListener('click', () => {
         const dataList = [];
         const inputGroups = document.querySelectorAll('.input-group');
+        
+        if( textCopy.value ){
+            textCopy.value.split(/\r?\n|\r/).map( x => x.split("R$").map( x => x.trim() ) )
+            .forEach(group => { 
+                if(group[0]){
+                    dataList.push({
+                        name: group[0],
+                        value: {
+                            input1: group[1],
+                            input2: group[1]
+                        }
+                    });
+                }
+             });
 
-        inputGroups.forEach(group => {
-            const labelName = group.querySelector('.label-name').value.trim();
-            const input1Value = group.querySelector('.input1-value').value.trim();
-            const input2Value = group.querySelector('.input2-value').value.trim();
+        }else{
+            inputGroups.forEach(group => {
+                const labelName = group.querySelector('.label-name').value.trim();
+                const input1Value = group.querySelector('.input1-value').value.trim();
+                const input2Value = group.querySelector('.input2-value').value.trim();
 
-            if (labelName) { // Adiciona apenas se o nome da label for fornecido
-                dataList.push({
-                    name: labelName,
-                    value: {
-                        input1: input1Value,
-                        input2: input2Value
-                    }
-                });
-            }
-        });
-
+                if (labelName) { // Adiciona apenas se o nome da label for fornecido
+                    dataList.push({
+                        name: labelName,
+                        value: {
+                            input1: input1Value,
+                            input2: input2Value
+                        }
+                    });
+                }
+            });
+        }
+        
         // Salva os dados no storage do Chrome
         saveDataToStorage(dataList);
 

@@ -6,6 +6,7 @@
  * Exemplo: [{ name: "2,5 HEXANODIONA", value: { input1: "100,00", input2: "200,00" } }]
  */
 function processTableRows(dataList) {
+
     if (!dataList || !Array.isArray(dataList)) {
         console.error("processTableRows: A lista de dados fornecida é inválida.");
         return;
@@ -34,7 +35,11 @@ function processTableRows(dataList) {
                 // Match perfeito
                 inputP.value = dataItem.value.input1 || ''; // Define o valor do primeiro input
                 inputC.value = dataItem.value.input2 || ''; // Define o valor do segundo input
-                labelTd.style.color = 'green'; // Muda a cor da label para verde
+                
+                labelTd.style.color = 'white';
+                labelTd.style.fontSize = "150%"
+                labelTd.style.fontWeight="bold";
+                labelTd.style.background = 'black'; // Muda background da label para preto
                 matchFound = true;
                 return; // Sai do loop interno uma vez que uma correspondência é encontrada
             }
@@ -46,4 +51,5 @@ function processTableRows(dataList) {
         //     labelTd.style.color = ''; // Reseta para a cor padrão do CSS
         // }
     });
+    
 }
