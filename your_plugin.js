@@ -12,6 +12,7 @@ function processTableRows(dataList) {
         return;
     }
 
+    const listExames = []
     const trCheckBoxes = document.querySelectorAll('tr.trCheckBox');
     trCheckBoxes.forEach(tr => {
         const labelTd = tr.querySelector('td.label');
@@ -29,9 +30,11 @@ function processTableRows(dataList) {
             return;
         }
 
+        listExames.push(labelText)
+
         let matchFound = false;
         dataList.forEach(dataItem => {
-            if (labelText === dataItem.name) {
+            if (labelText && dataItem.name && labelText.trim() === dataItem.name.trim()) {
                 // Match perfeito
                 inputP.value = dataItem.value.input1 || ''; // Define o valor do primeiro input
                 inputC.value = dataItem.value.input2 || ''; // Define o valor do segundo input
@@ -51,5 +54,11 @@ function processTableRows(dataList) {
         //     labelTd.style.color = ''; // Reseta para a cor padrão do CSS
         // }
     });
-    
+ 
+    const exames_not_found = dataList.filter( x => !listExames.includes(x.item) );
+
+    console.log({
+        exames_nao_encontrado: exames_not_found
+    })
+    return exames_not_found;
 }
