@@ -43,8 +43,8 @@ if (window.frameElement && (window.frameElement.id === IFRAME_ID_OR_NAME || wind
                 try {
                     // Chama a função global processTableRows que foi injetada no contexto do iframe
                     if (typeof window.processTableRows === 'function') {
-                        window.processTableRows(request.data);
-                        sendResponse({ status: "success", message: "Dados aplicados." });
+                        const result = window.processTableRows(request.data);
+                        sendResponse({ status: "success", message: result });
                     } else {
                         console.error("Erro: A função processTableRows não está definida no contexto do iframe.");
                         sendResponse({ status: "error", message: "Função 'processTableRows' não encontrada no iframe." });
