@@ -19,7 +19,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const textCopy = document.getElementById('textCopy');
 
     try {
-        
         // Recupera dados salvos, se existirem
         if (storageAPI) {
             storageAPI.get(['savedDataList'], (result) => {
@@ -27,40 +26,15 @@ document.addEventListener('DOMContentLoaded', () => {
                     result.savedDataList.forEach(item => {
                         addInputFieldGroup(item.name, item.value.input1, item.value.input2);
                     });
-                } else {
-                    addInputFieldGroup(); // Adiciona um grupo vazio se não houver dados salvos
                 }
             });
-        } else {
-            // addInputFieldGroup(); // Adiciona um grupo vazio se não houver API de armazenamento
         }
     } catch (error) {
         console.error(error)
     }
 
-    function addInputFieldGroup(label = '2,5 HEXANODIONA', input1 = '100', input2 = '100') {
-        /*
-        const div = document.createElement('div');
-        div.classList.add('input-group');
-        div.innerHTML = `
-            <label>Nome da Label:</label>
-            <input type="text" class="label-name" placeholder="Ex: 2,5 HEXANODIONA" value="${label}">
-            <label>Valor para Input 1 (P):</label>
-            <input type="text" class="input1-value" placeholder="Ex: 150,00" value="${input1}">
-            <label>Valor para Input 2 (C):</label>
-            <input type="text" class="input2-value" placeholder="Ex: 150,00" value="${input2}">
-            <button class="remove-group">Remover</button>
-        `;
-        inputContainer.appendChild(div);
-        */
-
-        textCopy.value = textCopy.value + "\n label R$ " +input1;
-
-        // Adiciona listener para o botão "Remover"
-        div.querySelector('.remove-group').addEventListener('click', () => {
-            div.remove();
-            saveDataToStorage(); // Salva os dados após remover um grupo
-        });
+    function addInputFieldGroup(label = '', input1 = '', input2 = '') {
+        textCopy.value = textCopy.value + "\n "+ label +" R$ " +input1;
     }
 
     // Adiciona listener para o botão "Adicionar Mais Campos"
@@ -82,19 +56,22 @@ document.addEventListener('DOMContentLoaded', () => {
         const regex = /^(\d+(?:[.,]\d+)?)\s*(.*)$/;
         const match = myString.match(regex);
 
-        let numberPart;
-        let textPart;
+        let numberPart = '';
+        let textPart = '';
 
         if (match) {
             numberPart = match[1]; // The first captured group is the number string
-            textPart = match[2].trim();         // The second captured group is the rest of the text
+            textPart = match[2].trim(); // The second captured group is the rest of the text
         } else {
             // Handle cases where the string doesn't match the expected format
             console.log(`String format not recognized. ( ${myString} )`);
             numberPart = null;
             textPart = myString; // Or set to an empty string, depending on desired behavior
         }
-        return { number: numberPart, text: textPart}
+        return { 
+                    number: numberPart,
+                    text: textPart
+                }
     }
 
     function isNumber(str) {
@@ -115,7 +92,37 @@ document.addEventListener('DOMContentLoaded', () => {
         return regex.test(str);
     }
 
+    function getDataFromTextOneLineRefatorado(exames) {
+        const resultados = [];
+        // Expressão regular ajustada para capturar qualquer texto antes de "R$".
+        // Note que usamos um "non-greedy" match para evitar capturar exames inteiros em um só match.
+        const regex = /(.*?)\s+R\$\s*(\d+[,.]\d{2})/g;
+
+        let match;
+        while ((match = regex.exec(texto)) !== null) {
+            // match[1] é o nome do exame (e.g., "Exame de Sangue Completo", "Raios-X")
+            // match[2] é o preço (e.g., "10.50" ou "45,50")
+
+            const nomeExame = match[1].trim();
+            const preco = match[2].replace(',', '.'); // Substitui vírgula por ponto por para manter um padrão
+
+            if (nomeExame) { // Garante que o nome do exame não seja vazio
+                resultados.push([nomeExame, preco]);
+            }
+        }
+        return resultados;
+    }
+
     function getDataFromTextOneLine(text){
+
+        /*
+        
+            SEPARAR VALORES JUNTOS NA MESMA LINHAS
+            entrada: Exame1 R$ 10,50 Exame2 R$ 45,50 Exame3 R$ 30,50
+            Saida: [ [Exame1, 10,50], [Exame2, 45,50], [Exame3 R$ 30,50] ]
+
+        */
+
         const listNotProcess = text.split("R$")
         let currentListValues = [];
         let indexCurrentValues = 0;
@@ -147,8 +154,9 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if( textCopy.value ){
             const resultList = textCopy.value.split(/\r?\n|\r/).length > 1 ? 
-            textCopy.value.split(/\r?\n|\r/).map( x => x.split("R$").map( x => x.trim() ) ) :
-            getDataFromTextOneLine(textCopy.value);
+                textCopy.value.split(/\r?\n|\r/).map( x => x.split("R$").map( x => x.trim() ) ) :
+                getDataFromTextOneLineRefatorado(textCopy.value);
+            // getDataFromTextOneLine(textCopy.value);
 
             /*
             textCopy.value.split(/\r?\n|\r/).map( x => x.split("R$").map( x => x.trim() ) )
@@ -202,10 +210,7 @@ document.addEventListener('DOMContentLoaded', () => {
             displayMessage('Por favor, insira os valores para aplicar.', 'warning');
             return;
         }
-
-        // processTableRows(dataList);
-
-        // --- MUDANÇAS AQUI ---
+        
         chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
             if (tabs.length === 0) {
                 displayMessage('Nenhuma aba ativa encontrada.', 'error');
@@ -236,7 +241,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
         });
-        // --- FIM DAS MUDANÇAS ---
 
     });
 
@@ -259,23 +263,21 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const currentDataList = [];
+        const resultList = textCopy.value.split(/\r?\n|\r/).length > 1 ? 
+                textCopy.value.split(/\r?\n|\r/).map( x => x.split("R$").map( x => x.trim() ) ) :
+                getDataFromTextOneLineRefatorado(textCopy.value);
 
-        /*
-        document.querySelectorAll('.input-group').forEach(group => {
-            const labelName = group.querySelector('.label-name').value.trim();
-            const input1Value = group.querySelector('.input1-value').value.trim();
-            const input2Value = group.querySelector('.input2-value').value.trim();
-            if (labelName) {
+        resultList.forEach(x => {
+            if(x[0]){
                 currentDataList.push({
-                    name: labelName,
+                    name: x[0],
                     value: {
-                        input1: input1Value,
-                        input2: input2Value
+                        input1: x[1],
+                        input2: x[2]
                     }
                 });
             }
         });
-        */
 
         storageAPI.set({ savedDataList: dataToSave || currentDataList });
     }

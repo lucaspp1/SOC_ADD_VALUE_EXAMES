@@ -12,7 +12,7 @@ function processTableRows(dataList) {
         return;
     }
 
-    const listExames = []
+    const listExamesSoc = []
     const trCheckBoxes = document.querySelectorAll('tr.trCheckBox');
     trCheckBoxes.forEach(tr => {
         const labelTd = tr.querySelector('td.label');
@@ -30,7 +30,7 @@ function processTableRows(dataList) {
             return;
         }
 
-        listExames.push(labelText)
+        listExamesSoc.push(labelText)
 
         let matchFound = false;
         dataList.forEach(dataItem => {
@@ -47,18 +47,8 @@ function processTableRows(dataList) {
                 return; // Sai do loop interno uma vez que uma correspondência é encontrada
             }
         });
-
-        // Se nenhuma correspondência perfeita for encontrada, a label permanece com a cor original.
-        // Se você quiser resetar a cor ou aplicar outra cor para não-matches, adicione lógica aqui:
-        // if (!matchFound) {
-        //     labelTd.style.color = ''; // Reseta para a cor padrão do CSS
-        // }
     });
  
-    const exames_not_found = dataList.filter( x => !listExames.includes(x.item) );
-
-    console.log({
-        exames_nao_encontrado: exames_not_found
-    })
+    const exames_not_found = dataList.filter( x => !listExamesSoc.includes(x.item) );
     return exames_not_found;
 }

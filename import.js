@@ -17,5 +17,4 @@ HEMOGRAMA COMPLETO C/ PLAQUETAS R$9.00
 RAIO X COLUNA LS R$40.00
 TESTE DE ROMBERG R$15.0
 `
-
 const listValues = texto.split(/\r?\n|\r/).map( x => x.split("R$").map( x => x.trim() ) );

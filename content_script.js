@@ -66,5 +66,5 @@ if (window.frameElement && (window.frameElement.id === IFRAME_ID_OR_NAME || wind
     // ele precisaria do frameId do iframe, o que é mais complexo de obter.
     // A abordagem atual (all_frames: true) fará com que todos os content scripts escutem
     // e o iframe correto agirá.
-    // console.log("Content script carregado em um frame não-alvo ou principal.");
+    console.log("Content script carregado em um frame não-alvo ou principal.");
 }
